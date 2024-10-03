@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Список книг</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .blockquote {
+      text-align: end;
+    }
+
+    .table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      border: 2px solid #007bff;
+    }
+      
+    .form-select-sm {
+      display: block;
+      width: 150px;
+      margin-top: 20px;
+    }
+
+    .float-end {
+      float: right;
+      margin-left: 20px;
+    }
+
+    .form-control-sm {
+      width: 200px;
+      margin-top: 20px;
+    }
+
+    th {
+      text-align: center;
+      vertical-align: middle;
+      border: 2px solid #007bff;
+    }
+
+    td {
+      text-align: center;
+      vertical-align: middle;
+       border: 2px solid #007bff;
+    }
+  </style>
+     <script src="node_modules\xlsx\dist\xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <figure class="text-end">
+      <blockquote class="blockquote" id="quote"></blockquote>
+      <figcaption class="blockquote-footer" id="title"></figcaption>
+    </figure>
+  </div>
+
+  <select id="authorSelect" class="form-select-sm">
+    <option value="">Author</option>
+  </select>
+
+  <button id="clearButton" class="float-end btn btn-outline-secondary btn-sm">
+    Clear Fields
+  </button>
+
+  <input
+    id="searchInput"
+    class="form-control-sm float-end"
+    type="text"
+    placeholder="Enter book title"
+    style="margin-left: 40px"
+  />
+
+  <table id="bookTable">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Authors</th>
+        <th>Description</th>
+        <th>Print Type</th>
+      </tr>
+    </thead>
+    <tbody id="bookTableBody"></tbody>
+  </table>
+
+  <script>
+    let books = [];
+    let uniqueAuthors = [];
+    let quote = "";
+    let title = "";
+    let searchTerm = "";
+    let selectedAuthor = "";
+
+    const authorSelect = document.getElementById("authorSelect");
+    const clearButton = document.getElementById("clearButton");
+    const searchInput = document.getElementById("searchInput");
+    const bookTable = document.getElementById("bookTable");
+    const bookTableBody = document.getElementById("bookTableBody");
+    const quoteElement = document.getElementById("quote");
+    const titleElement = document.getElementById("title");
+
+    // Загрузка данных из файла Excel
+    fetch("\Stru1.xls")
+      .then((response) => response.arrayBuffer())
+      .then((data) => {
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+        const randomIndex = Math.floor(Math.random() * jsonData.length);
+        quote = jsonData[randomIndex].quote;
+        title = jsonData[randomIndex].title;
+
+        quoteElement.textContent = quote;
+        titleElement.textContent = title;
+      })
+      .catch((error) => console.log(error));
+
+    // Загрузка данных о книгах
+    fetch(
+      "https://www.googleapis.com/books/v1/volumes?q=inauthor:strugatsky+brothers&maxResults=20"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.items) {
+          books = data.items.map(({ volumeInfo }) => ({
+            title: volumeInfo.title,
+            authors: volumeInfo.authors,
+            description: volumeInfo.description
+              ? volumeInfo.description
+              : "Unknown",
+            printType: volumeInfo.printType,
+          }));
+
+          // Обновление списка авторов
+          uniqueAuthors = [
+            ...new Set(books.map((book) => book.authors.sort().join(", "))),
+          ];
+          updateAuthorOptions();
+          updateBookTable();
+        }
+      })
+      .catch((error) => console.error("Error fetching books:", error));
+
+    // Обновление списка авторов в селекте
+    function updateAuthorOptions() {
+      authorSelect.innerHTML = ""; // Очищаем селект
+      const option = document.createElement("option");
+      option.value = "";
+      option.text = "Author";
+      authorSelect.add(option); // Добавляем опцию "Author"
+
+      uniqueAuthors.forEach((author) => {
+        const option = document.createElement("option");
+        option.value = author;
+        option.text = author;
+        authorSelect.add(option); // Добавляем опцию с автором
+      });
+    }
+
+    // Обновление таблицы с книгами
+    function updateBookTable() {
+      bookTableBody.innerHTML = ""; // Очищаем таблицу
+
+      const filteredBooks = books.filter((book) => {
+        const searchTermLower = searchTerm.toLowerCase();
+        return (
+          book.title.toLowerCase().includes(searchTermLower) &&
+          (selectedAuthor === "" ||
+            book.authors.sort().join(", ").includes(selectedAuthor))
+        );
+      });
+
+      filteredBooks.forEach((book) => {
+        const row = bookTableBody.insertRow();
+        const titleCell = row.insertCell();
+        const authorsCell = row.insertCell();
+        const descriptionCell = row.insertCell();
+        const printTypeCell = row.insertCell();
+
+        titleCell.textContent = book.title;
+        authorsCell.textContent = book.authors.join(", ");
+        descriptionCell.textContent = book.description;
+        printTypeCell.textContent = book.printType;
+      });
+    }
+
+    // Обработчик события для выбора автора
+    authorSelect.addEventListener("change", () => {
+      selectedAuthor = authorSelect.value;
+      updateBookTable();
+    });
+
+    // Обработчик события для ввода поискового запроса
+    searchInput.addEventListener("input", () => {
+      searchTerm = searchInput.value;
+      updateBookTable();
+    });
+
+    // Обработчик события для очистки полей
+    clearButton.addEventListener("click", () => {
+      searchTerm = "";
+      selectedAuthor = "";
+      searchInput.value = "";
+      authorSelect.value = "";
+      updateBookTable();
+    });
+  </script>
+</body>
+</html>
+
