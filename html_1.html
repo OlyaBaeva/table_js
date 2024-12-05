@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> my Title</title>
+</head>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Заполнение полей поверх фотографии</title>
+  <style>
+    #image-container {
+      position: relative;
+      width: 400px;
+      height: 500px;
+      background: transparent; 
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute; 
+      top: 0;
+      left: 0;
+    }
+
+    .input-field {
+      position: absolute;
+      background: transparent;
+      padding: 10px;
+      border: none;
+    }
+
+    .input-field input {
+      background: transparent;
+      border: none;
+      padding: 5px;
+    }
+
+    .text {
+      position: absolute;
+      background: transparent;
+      padding: 10px;
+      border: none;
+    }
+    .p{
+            position: absolute;
+      background: transparent;
+      padding: 10px;
+      border: none;
+        }
+
+    .text input {
+      background: transparent;
+      border: none;
+      padding: 5px;
+        
+    }
+  </style>
+</head>
+<body>
+  <a id="top">
+    <div id="image-container">
+      <img src='picture.jpg' alt="Фотография">
+      <div class="block1" id="b1" style="top: 55px; left: 130px; position:relative">
+          <p >УФМС РОССИИ<br> ПО РЯЗАНСКОЙ ОБЛАСТИ </p>
+      </div>
+      <div class="input-field" style="bottom: 160px; left: 160px;">
+        <input type="text" style="background: transparent; border: none" placeholder="Фамилия" id="surname">
+      </div>
+      <div class="text" style="top: 340px; left: 160px;">
+        <input type="text" style="background: transparent; border: none" placeholder="Имя" id="name">
+      </div>
+      <div class="input-field" style="top: 360px; right: 40px;">
+        <input type="text" style="background: transparent; border: none" placeholder="Отчество" id="lastname">
+      </div>
+      <div class="input-field" style="width: 22%;
+      height: 24%; bottom: 19px; left: 22px"; >
+        <img src="photo.jpeg" placeholder="Photo" id="photo" style="display: none;"> 
+      </div>
+    </div>
+  </a>
+
+  <H1 id="for_click_name"> Показать имя </H1>
+  <H1 id="for_click_all"> Показать все </H1>
+
+  <a id="bot">
+    <H1 id="insert_img"> Показать фото </H1>
+    <div id="image-container-new"></div>
+     <input type="text"  placeholder="Введите число" id="n">
+    <H1 id="insert_table"> Вставить таблицу </H1>
+    <table id="table" border="1" width="1000" height="600"></table>
+<!--    <a href="#top" target="_self"> <img src='1020037.png' width="50" height="50" align="right"> </a>-->
+  </a>
+  <script>
+    const node_for_click_all = document.getElementById("for_click_all");
+    function showPhoto() {
+      document.getElementById('photo').style.display = 'block'; 
+    }
+    const node_insert_img = document.getElementById("insert_img");
+    node_insert_img.addEventListener("click", showPhoto); 
+    function find_edit_all() {
+      document.getElementById('name').value = 'Сергей';
+      document.getElementById('lastname').value = 'Александрович';
+      document.getElementById('surname').value = 'Есенин';
+//      document.getElementById('b1').innerHTML = 'новый блок';
+    }
+
+    node_for_click_all.addEventListener("click", find_edit_all);
+
+    const node_for_click_name = document.getElementById("for_click_name");
+
+    function find_edit_name() {
+      document.getElementById('name').value = 'Сергей';
+    }
+
+    node_for_click_name.addEventListener("click", find_edit_name);
+
+    function insert_table() {
+      let table = document.querySelector('#table');
+      table.innerHTML = '';
+      let number = document.getElementById('n');
+      let n = number.value
+      for (let i = 0; i < n; i++) {
+        let tr = document.createElement('tr');
+
+        for (let j = 0; j < n; j++) {
+          let td = document.createElement('td');
+          tr.appendChild(td);
+          td.innerText = (i+1)*(j+1);
+        }
+
+        table.appendChild(tr);
+      }
+    }
+
+    const node_insert_table = document.getElementById("insert_table");
+    node_insert_table.addEventListener("click", insert_table);
+  </script>
+</body>
+</html>

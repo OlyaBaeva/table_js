@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Задачи</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    input[type="number"] {
+      width: 150px;
+      padding: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 8px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #balance {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+    <div class="task-container">
+    <h1> Задание 1 </h1>
+    <input type="number" placeholder="Введите сторону a" id="a">
+    <input type="number" placeholder="Введите сторону b" id="b">
+    <input type="number" placeholder="Введите сторону c" id="c">
+    <br>
+        <button id="for_click_name"> Показать ответ </button>
+  </div>
+
+  <div class="task-container">
+    <h1> Задание 2 </h1>
+    <text> Введите целое число Y, такое, что Y больше 2 </text>
+    <br>
+    <input type="number" placeholder="Введите Y" id="Y">
+    <br>
+    <button onclick="showResult()">Показать результат</button>
+    <br>
+    <text id="t"></text>
+    <br>
+    <text id="teee"></text>
+  </div>
+
+  <div class="task-container">
+    <h1> Задание 3 </h1>
+    <p>Ваш баланс: <span id="balance"></span></p>
+    <text> Введите сумму </text>
+    <input type="number" id="sum">
+    <br>
+    <button onclick="withdraw()">Снять</button>
+    <button onclick="deposit()">Внести</button>
+  </div>
+  
+  <script>
+    
+    const node_for_click_name = document.getElementById("for_click_name");
+
+    function checkTriangleExistence() {
+      const a = +document.getElementById('a').value;
+      const b = +document.getElementById('b').value;  
+      const c = +document.getElementById('c').value;
+      console.log(a,b,c);
+      console.log(a+b,b+c,c+a);  
+      if (a < (b+c) && b < (a+c) && c < (b+a)){
+          alert("Треугольник существует");
+      }
+      else {
+          alert("Треугольник с такими сторонами существовать не может");
+      }
+    } 
+
+    node_for_click_name.addEventListener("click", checkTriangleExistence);
+      
+    const myObject = {
+    calculatePower: function(Y) {
+    return Math.pow(Y - 2, Y);
+  }
+};
+function showResult() {
+      const Y = +document.getElementById('Y').value;
+      if (Y < 2){
+          document.getElementById('t').innerText = "Недопустимое значение";
+      } else{
+      const result = myObject.calculatePower(Y);
+      document.getElementById('t').innerText = result; 
+      document.getElementById('teee').innerText = `Данный метод возвращает значение возведения числа ${Y-2} в степень ${Y}`;    
+      };
+    }
+      
+    let balance = 200;
+    document.getElementById('balance').innerText = balance;
+    function withdraw() {
+      const sum = +document.getElementById('sum').value;
+      if (sum <= balance) {
+        balance -= sum;
+        document.getElementById('balance').innerText = balance;
+      } else {
+        alert("Недостаточно средств на счету!");
+      }
+    }
+
+    function deposit() {
+      const sum = +document.getElementById('sum').value;
+      balance += sum;
+      document.getElementById('balance').innerText = balance;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Список книг</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.2.37/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .blockquote {
+      text-align: end;
+    }
+
+    .table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      border: 2px solid #007bff;
+    }
+
+    .form-select-sm {
+      display: block;
+      width: 150px;
+      margin-top: 20px;
+    }
+
+    .float-end {
+      float: right;
+      margin-left: 20px;
+    }
+
+    .form-control-sm {
+      width: 200px;
+      margin-top: 20px;
+    }
+
+    th {
+      text-align: center;
+      vertical-align: middle;
+      border: 2px solid #007bff;
+    }
+
+    td {
+      text-align: center;
+      vertical-align: middle;
+      border: 2px solid #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <figure class="text-end">
+        <blockquote class="blockquote" v-html="quote"></blockquote>
+        <figcaption class="blockquote-footer" v-html="title"></figcaption>
+      </figure>
+    </div>
+
+    <select v-model="selectedAuthor" class="form-select-sm">
+      <option value="">Author</option>
+      <option v-for="author in uniqueAuthors" :key="author" :value="author">
+        {{ author }}
+      </option>
+    </select>
+
+    <button @click="clearFields" class="float-end btn btn-outline-secondary btn-sm">
+      Clear Fields
+    </button>
+
+    <input
+      v-model="searchTerm"
+      class="form-control-sm float-end"
+      type="text"
+      placeholder="Enter book title"
+      style="margin-left: 40px"
+    />
+
+    <table id="bookTable">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Authors</th>
+          <th>Description</th>
+          <th>Print Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="book in filteredBooks" :key="book.title">
+          <td>{{ book.title }}</td>
+          <td>{{ book.authors.join(", ") }}</td>
+          <td>{{ book.description }}</td>
+          <td>{{ book.printType }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          books: [],
+          uniqueAuthors: [],
+          quote: "",
+          title: "",
+          searchTerm: "",
+          selectedAuthor: "",
+        };
+      },
+      computed: {
+        filteredBooks() {
+          const searchTermLower = this.searchTerm.toLowerCase();
+          return this.books.filter((book) => {
+            return (
+              book.title.toLowerCase().includes(searchTermLower) &&
+              (this.selectedAuthor === "" ||
+                book.authors.sort().join(", ").includes(this.selectedAuthor))
+            );
+          });
+        },
+      },
+      mounted() {
+        this.loadExcelData();
+        this.loadBookData();
+      },
+      methods: {
+        loadExcelData() {
+          fetch("Stru1.xls")
+            .then((response) => response.arrayBuffer())
+            .then((data) => {
+              const workbook = XLSX.read(data, { type: "array" });
+              const sheetName = workbook.SheetNames[0];
+              const sheet = workbook.Sheets[sheetName];
+              const jsonData = XLSX.utils.sheet_to_json(sheet);
+              const randomIndex = Math.floor(Math.random() * jsonData.length);
+              this.quote = jsonData[randomIndex].quote;
+              this.title = jsonData[randomIndex].title;
+            })
+            .catch((error) => console.log(error));
+        },
+        loadBookData() {
+          fetch(
+            "https://www.googleapis.com/books/v1/volumes?q=inauthor:strugatsky+brothers&maxResults=20"
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              if (data && data.items) {
+                this.books = data.items.map(({ volumeInfo }) => ({
+                  title: volumeInfo.title,
+                  authors: volumeInfo.authors,
+                  description: volumeInfo.description
+                    ? volumeInfo.description
+                    : "Unknown",
+                  printType: volumeInfo.printType,
+                }));
+
+                // Обновление списка авторов
+                this.uniqueAuthors = [
+                  ...new Set(
+                    this.books.map((book) => book.authors.sort().join(", "))
+                  ),
+                ];
+              }
+            })
+            .catch((error) => console.error("Error fetching books:", error));
+        },
+        clearFields() {
+          this.searchTerm = "";
+          this.selectedAuthor = "";
+        },
+      },
+    });
+
+    app.mount("#app");
+  </script>
+</body>
+</html>
+

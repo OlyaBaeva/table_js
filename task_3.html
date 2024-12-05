@@ -191,7 +191,6 @@ function display_none(text){
   let min_color_name = "";
   inputFields.forEach((field, index) => {
     row.push(field.value); 
-    console.log(row, field);
     if ((index + 1) % 4 === 0) { 
       calor = 0.4*row[1]+0.3*row[2]+0.3*row[3]
       if (calor < min_calor){
@@ -486,7 +485,6 @@ let include = false;
    
     [str_name, str_price] = inputString.split(",");
     include = false;
-    console.log(str_price.slice(-1));
     if (str_price.slice(-1)=="3"){
     for (let i = 0; i < inputDate.length; i++) {
       if (inputDate[i][0] === str_name) {
