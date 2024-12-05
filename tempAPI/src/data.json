@@ -1,0 +1,21 @@
+{
+ "countries": [
+  {
+   "name": "Russia",
+   "cities": ["Moscow"]
+  },
+  {
+   "name": "USA",
+   "cities": ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville", "Columbus", "Charlotte"]
+  },
+     { "name": "China", "cities": ["Beijing", "Shanghai", "Guangzhou", "Shenyang", "Tianjin", "Wuhan", "Chongqing", "Chengdu", "Hangzhou"] },
+    { "name": "India", "cities": ["Delhi", "Mumbai", "Kolkata", "Bengaluru", "Chennai", "Ahmedabad", "Surat", "Pune", "Jaipur", "Lucknow"] },
+    { "name": "Brazil", "cities": ["Sao Paulo", "Rio de Janeiro", "Brasilia", "Salvador", "Fortaleza", "Belo Horizonte", "Curitiba", "Manaus", "Porto Alegre", "Guarulhos"] },
+    { "name": "Germany", "cities": ["Berlin", "Hamburg", "Munich", "Cologne", "Frankfurt", "Stuttgart", "Dusseldorf", "Dortmund", "Essen", "Leipzig"] },
+    { "name": "Japan", "cities": ["Tokyo", "Yokohama", "Osaka", "Nagoya", "Sapporo", "Fukuoka", "Kobe", "Kyoto", "Sendai", "Hiroshima"] },
+    { "name": "United Kingdom", "cities": ["London", "Birmingham", "Liverpool", "Manchester", "Leicester", "Sheffield", "Glasgow", "Edinburgh", "Bristol", "Cardiff"] },
+    { "name": "France", "cities": ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Lille", "Bordeaux"] },
+    { "name": "Canada", "cities": ["Toronto", "Montreal", "Calgary", "Edmonton", "Ottawa", "Vancouver", "Winnipeg", "Hamilton", "Kitchener", "Oshawa"] }
+ ]
+}
+
