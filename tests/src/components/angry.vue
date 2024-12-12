@@ -60,7 +60,6 @@
 
 <script>
 export default {
-props: ['3'],
   data() {
     return {
       questions: [
