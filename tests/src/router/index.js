@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import App from '../App.vue';
 import Test1 from '../components/speed.vue';
 import Test2 from '../components/commut.vue';
-import Test3 from '../components/angry.vue';
+import Test3 from '../components/sequences.vue';
 import Test4 from '../components/torndayt.vue';
 import Test5 from '../components/dots.vue';
 
